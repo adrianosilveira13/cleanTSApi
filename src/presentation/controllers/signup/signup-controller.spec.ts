@@ -1,7 +1,5 @@
-import { AccountModel } from '../../domain/models/account-model'
-import { AddAccount, AddAccountModel } from '../../domain/usecases/add-account'
-import { InvalidParamError, MissingParamError, ServerError } from '../errors'
-import { EmailValidator, HttpRequest } from '../protocols'
+import { AccountModel, AddAccount, AddAccountModel, EmailValidator, HttpRequest } from './signup-protocols'
+import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
 import { SignUpController } from './signup-controller'
 
 const makeFakeRequest = (): HttpRequest => ({
