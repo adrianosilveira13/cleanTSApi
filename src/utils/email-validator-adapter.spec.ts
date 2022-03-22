@@ -31,4 +31,11 @@ describe('first', () => {
     const isValid = sut.isValid('valid_email@mail.com')
     expect(isValid).toBe(true)
   })
+
+  it('should call validator with correct email', () => {
+    const { sut } = makeSut()
+    const isEmailSpy = jest.spyOn(validator, 'isEmail')
+    sut.isValid('valid_email@mail.com')
+    expect(isEmailSpy).toHaveBeenCalledWith('valid_email@mail.com')
+  })
 })
