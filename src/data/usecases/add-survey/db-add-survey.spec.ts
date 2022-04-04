@@ -1,24 +1,38 @@
-import { AddSurveyModel, AddSurveyRepository, DbAddSurvey } from './db-add-survey-protocols'
+import { AddSurvey, AddSurveyModel, AddSurveyRepository, DbAddSurvey } from './db-add-survey-protocols'
+
+const makeFakeSurveyData = (): AddSurveyModel => (
+  {
+    question: 'any_question',
+    answers: [{
+      image: 'any_image',
+      answer: 'any_answer'
+    }]
+  }
+)
+
+interface SutTypes {
+  sut: DbAddSurvey
+  addSurveyRepositoryStub: AddSurvey
+}
+
+const makeSut = (): SutTypes => {
+  class AddSurveyRepositoryStub implements AddSurveyRepository {
+    async add (surveyData: AddSurveyModel): Promise<void> {
+      return Promise.resolve()
+    }
+  }
+  const addSurveyRepositoryStub = new AddSurveyRepositoryStub()
+  const sut = new DbAddSurvey(addSurveyRepositoryStub)
+  return {
+    sut,
+    addSurveyRepositoryStub
+  }
+}
 
 describe('DbAddSurvey Usecase', () => {
-  const makeFakeSurveyData = (): AddSurveyModel => (
-    {
-      question: 'any_question',
-      answers: [{
-        image: 'any_image',
-        answer: 'any_answer'
-      }]
-    }
-  )
   it('Should call AddSurveyRepository with correct values', async () => {
-    class AddSurveyRepositoryStub implements AddSurveyRepository {
-      async add (surveyData: AddSurveyModel): Promise<void> {
-        return Promise.resolve()
-      }
-    }
-    const addSurveyRepositoryStub = new AddSurveyRepositoryStub()
+    const { sut, addSurveyRepositoryStub } = makeSut()
     const addSpy = jest.spyOn(addSurveyRepositoryStub, 'add')
-    const sut = new DbAddSurvey(addSurveyRepositoryStub)
     const surveyData = makeFakeSurveyData()
     await sut.add(surveyData)
     expect(addSpy).toHaveBeenCalledWith(surveyData)
