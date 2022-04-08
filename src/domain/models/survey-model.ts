@@ -4,8 +4,8 @@ export interface SurveyAnswerModel {
 }
 
 export interface SurveyModel {
- id: string
- question: string
- answers: SurveyAnswerModel[]
- date: Date
+  id: string
+  question: string
+  answers: SurveyAnswerModel[]
+  date: Date
 }
