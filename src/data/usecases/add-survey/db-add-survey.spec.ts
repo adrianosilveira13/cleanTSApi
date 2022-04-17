@@ -1,4 +1,4 @@
-import { AddSurvey, AddSurveyModel, AddSurveyRepository, DbAddSurvey } from './db-add-survey-protocols'
+import { AddSurveyModel, AddSurveyRepository, DbAddSurvey } from './db-add-survey-protocols'
 import MockDate from 'mockdate'
 
 const makeFakeSurveyData = (): AddSurveyModel => (
@@ -14,7 +14,7 @@ const makeFakeSurveyData = (): AddSurveyModel => (
 
 type SutTypes = {
   sut: DbAddSurvey
-  addSurveyRepositoryStub: AddSurvey
+  addSurveyRepositoryStub: AddSurveyRepository
 }
 
 const makeSut = (): SutTypes => {
