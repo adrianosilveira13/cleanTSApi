@@ -5,6 +5,7 @@ import {
   HttpResponse,
   InvalidParamError,
   LoadSurveyById,
+  reqSuccess,
   SaveSurveyResult,
   serverError
 } from './save-survey-result-controller-protocols'
@@ -29,13 +30,13 @@ export class SaveSurveyResultController implements Controller {
       } else {
         return forbbiden(new InvalidParamError('surveyId'))
       }
-      await this.saveSurveyResult.save({
+      const surveyResult = await this.saveSurveyResult.save({
         surveyId,
         accountId,
         answer,
         date: new Date()
       })
-      return null
+      return reqSuccess(surveyResult)
     } catch (error) {
       return serverError(error)
     }
