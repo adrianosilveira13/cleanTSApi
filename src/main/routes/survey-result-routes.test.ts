@@ -80,5 +80,21 @@ describe('Survey Routes', () => {
         .get('/api/surveys/any_id/results')
         .expect(403)
     })
+
+    it('Should return 200 on load survey result with valid access token', async () => {
+      const accessToken = await makeAccessToken()
+      const res = await surveyCollection.insertOne({
+        question: 'Question',
+        answers: [{
+          answer: 'Answer 1',
+          image: 'http://image.com/image.png'
+        }],
+        date: new Date()
+      })
+      await request(app)
+        .get(`/api/surveys/${res.ops[0]._id}/results`)
+        .set('x-access-token', accessToken)
+        .expect(200)
+    })
   })
 })
