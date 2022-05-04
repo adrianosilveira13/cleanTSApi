@@ -6,6 +6,7 @@ import {
   LoadSurveyResult,
   forbbiden,
   serverError,
+  reqSuccess,
   InvalidParamError
 } from './load-survey-result-controller-protocols'
 
@@ -22,8 +23,8 @@ export class LoadSurveyResultController implements Controller {
       if (!survey) {
         return forbbiden(new InvalidParamError('surveyId'))
       }
-      await this.loadSurveyResult.load(surveyId)
-      return null
+      const surveyResult = await this.loadSurveyResult.load(surveyId)
+      return reqSuccess(surveyResult)
     } catch (error) {
       return serverError(error)
     }
