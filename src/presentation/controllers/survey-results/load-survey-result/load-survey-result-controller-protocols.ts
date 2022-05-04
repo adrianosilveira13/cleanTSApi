@@ -1,4 +1,6 @@
 export * from '@/presentation/protocols'
 export * from '@/domain/test'
 export * from '@/presentation/test'
+export * from '@/presentation/helpers/http/http-helper'
+export * from '@/presentation/errors'
 export * from '@/domain/usecases/survey/load-surveys-by-id'
