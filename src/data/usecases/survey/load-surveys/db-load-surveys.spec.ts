@@ -2,6 +2,7 @@ import { DbLoadSurveys } from './db-load-surveys'
 import { throwError } from '@/domain/test'
 import MockDate from 'mockdate'
 import { LoadSurveysRepositorySpy } from '../../survey-result/load-survey-result/db-load-survey-result-protocols'
+import faker from '@faker-js/faker'
 
 type SutTypes = {
   sut: DbLoadSurveys
@@ -28,20 +29,21 @@ describe('DbLoadSurveys', () => {
 
   it('Should call LoadSurveysRepository', async () => {
     const { sut, loadSurveysRepositorySpy } = makeSut()
-    await sut.load()
-    expect(loadSurveysRepositorySpy.callsCount).toBe(1)
+    const accountId = faker.random.alphaNumeric()
+    await sut.load(accountId)
+    expect(loadSurveysRepositorySpy.accountId).toBe(accountId)
   })
 
   it('Should return a list of Surveys on success', async () => {
     const { sut, loadSurveysRepositorySpy } = makeSut()
-    const surveys = await sut.load()
+    const surveys = await sut.load(faker.random.alphaNumeric())
     expect(surveys).toEqual(loadSurveysRepositorySpy.surveyModels)
   })
 
   it('Should throw if LoadSurveyRepository throws', async () => {
     const { sut, loadSurveysRepositorySpy } = makeSut()
     jest.spyOn(loadSurveysRepositorySpy, 'loadAll').mockImplementationOnce(throwError)
-    const promise = sut.load()
+    const promise = sut.load(faker.random.alphaNumeric())
     expect(promise).rejects.toThrow()
   })
 })
