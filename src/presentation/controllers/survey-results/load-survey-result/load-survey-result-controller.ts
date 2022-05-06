@@ -23,7 +23,7 @@ export class LoadSurveyResultController implements Controller {
       if (!survey) {
         return forbbiden(new InvalidParamError('surveyId'))
       }
-      const surveyResult = await this.loadSurveyResult.load(surveyId)
+      const surveyResult = await this.loadSurveyResult.load(surveyId, httpRequest.accountId)
       return reqSuccess(surveyResult)
     } catch (error) {
       return serverError(error)
