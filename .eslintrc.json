@@ -19,6 +19,9 @@
         "@typescript-eslint/strict-boolean-expressions": "off",
         "@typescript-eslint/return-await": "off",
         "@typescript-eslint/no-misused-promises": "off",
-        "no-useless-constructor": "off"
+        "no-useless-constructor": "off",
+        "@typescript-eslint/no-namespace": "off",
+        "import/export": "off",
+        "no-redeclare": "off"
     }
 }
