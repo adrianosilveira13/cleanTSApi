@@ -1,7 +1,7 @@
 import env from '@/main/config/env'
 import app from '@/main/config/app'
 import { MongoHelper } from '@/infra/db'
-import { Collection } from 'mongodb'
+import { Collection, ObjectId } from 'mongodb'
 import { hash } from 'bcrypt'
 import { sign } from 'jsonwebtoken'
 import request from 'supertest'
@@ -16,10 +16,10 @@ const makeAccessToken = async (): Promise<string> => {
     email: 'adriano@gmail.com',
     password
   })
-  const id = res.ops[0]._id
+  const id = res.insertedId.toHexString()
   const accessToken = sign({ id }, env.jwtSecret)
   await accountCollection.updateOne({
-    _id: id
+    _id: new ObjectId(id)
   }, {
     $set: {
       accessToken
@@ -38,9 +38,9 @@ describe('Survey Routes', () => {
   })
 
   beforeEach(async () => {
-    surveyCollection = await MongoHelper.getCollection('surveys')
+    surveyCollection = MongoHelper.getCollection('surveys')
     await surveyCollection.deleteMany({})
-    accountCollection = await MongoHelper.getCollection('accounts')
+    accountCollection = MongoHelper.getCollection('accounts')
     await accountCollection.deleteMany({})
   })
 
@@ -65,7 +65,7 @@ describe('Survey Routes', () => {
         date: new Date()
       })
       await request(app)
-        .put(`/api/surveys/${res.ops[0]._id}/results`)
+        .put(`/api/surveys/${res.insertedId.toHexString()}/results`)
         .set('x-access-token', accessToken)
         .send({
           answer: 'Answer 1'
@@ -92,7 +92,7 @@ describe('Survey Routes', () => {
         date: new Date()
       })
       await request(app)
-        .get(`/api/surveys/${res.ops[0]._id}/results`)
+        .get(`/api/surveys/${res.insertedId.toHexString()}/results`)
         .set('x-access-token', accessToken)
         .expect(200)
     })

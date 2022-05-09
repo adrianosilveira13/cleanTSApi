@@ -4,7 +4,7 @@ import { MongoHelper } from '@/infra/db'
 
 import { sign } from 'jsonwebtoken'
 import { createTestClient } from 'apollo-server-integration-testing'
-import { Collection } from 'mongodb'
+import { Collection, ObjectId } from 'mongodb'
 import { hash } from 'bcrypt'
 import { ApolloServer, gql } from 'apollo-server-express'
 
@@ -20,10 +20,10 @@ const mockAccessToken = async (): Promise<string> => {
     password,
     role: 'admin'
   })
-  const id = res.ops[0]._id
+  const id = res.insertedId.toHexString()
   const accessToken = sign({ id }, env.jwtSecret)
   await accountCollection.updateOne({
-    _id: id
+    _id: new ObjectId(id)
   }, {
     $set: {
       accessToken
@@ -43,9 +43,9 @@ describe('Survey GraphQL', () => {
   })
 
   beforeEach(async () => {
-    surveyCollection = await MongoHelper.getCollection('surveys')
+    surveyCollection = MongoHelper.getCollection('surveys')
     await surveyCollection.deleteMany({})
-    accountCollection = await MongoHelper.getCollection('accounts')
+    accountCollection = MongoHelper.getCollection('accounts')
     await accountCollection.deleteMany({})
   })
 

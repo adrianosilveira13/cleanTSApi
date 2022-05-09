@@ -1,6 +1,6 @@
 import { MongoHelper, AccountMongoRepository } from '@/infra/db'
 import { mockAddAccountParams } from '@/tests/domain/mocks'
-import { Collection } from 'mongodb'
+import { Collection, Document } from 'mongodb'
 import { faker } from '@faker-js/faker'
 
 let accountCollection: Collection
@@ -15,7 +15,7 @@ describe('AccountMongoRepository', () => {
   })
 
   beforeEach(async () => {
-    accountCollection = await MongoHelper.getCollection('accounts')
+    accountCollection = MongoHelper.getCollection('accounts')
     await accountCollection.deleteMany({})
   })
 
@@ -71,7 +71,7 @@ describe('AccountMongoRepository', () => {
     it('Should update the account access token on success', async () => {
       const sut = makeSut()
       const res = await accountCollection.insertOne(mockAddAccountParams())
-      const fakeAccount = res.ops[0]
+      const fakeAccount: Document = await accountCollection.findOne({ _id: res.insertedId })
       expect(fakeAccount.accessToken).toBeFalsy()
       const accessToken = faker.random.alphaNumeric()
       await sut.updateAccessToken(fakeAccount._id, accessToken)

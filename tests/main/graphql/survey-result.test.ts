@@ -4,7 +4,7 @@ import { MongoHelper } from '@/infra/db'
 
 import { sign } from 'jsonwebtoken'
 import { createTestClient } from 'apollo-server-integration-testing'
-import { Collection } from 'mongodb'
+import { Collection, ObjectId } from 'mongodb'
 import { hash } from 'bcrypt'
 import { ApolloServer, gql } from 'apollo-server-express'
 
@@ -20,10 +20,10 @@ const mockAccessToken = async (): Promise<string> => {
     password,
     role: 'admin'
   })
-  const id = res.ops[0]._id
+  const id = res.insertedId.toHexString()
   const accessToken = sign({ id }, env.jwtSecret)
   await accountCollection.updateOne({
-    _id: id
+    _id: new ObjectId(id)
   }, {
     $set: {
       accessToken
@@ -43,9 +43,9 @@ describe('SurveyResult GraphQL', () => {
   })
 
   beforeEach(async () => {
-    surveyCollection = await MongoHelper.getCollection('surveys')
+    surveyCollection = MongoHelper.getCollection('surveys')
     await surveyCollection.deleteMany({})
-    accountCollection = await MongoHelper.getCollection('accounts')
+    accountCollection = MongoHelper.getCollection('accounts')
     await accountCollection.deleteMany({})
   })
 
@@ -87,7 +87,7 @@ describe('SurveyResult GraphQL', () => {
       })
       const res: any = await query(surveyResultQuery, {
         variables: {
-          surveyId: surveyRes.ops[0]._id.toString()
+          surveyId: surveyRes.insertedId.toHexString()
         }
       })
       expect(res.data.surveyResult.question).toBe('Question')
@@ -119,7 +119,7 @@ describe('SurveyResult GraphQL', () => {
       const { query } = createTestClient({ apolloServer })
       const res: any = await query(surveyResultQuery, {
         variables: {
-          surveyId: surveyRes.ops[0]._id.toString()
+          surveyId: surveyRes.insertedId.toHexString()
         }
       })
       expect(res.data).toBeFalsy()
@@ -165,7 +165,7 @@ describe('SurveyResult GraphQL', () => {
       })
       const res: any = await mutate(saveSurveyResultMutation, {
         variables: {
-          surveyId: surveyRes.ops[0]._id.toString(),
+          surveyId: surveyRes.insertedId.toHexString(),
           answer: 'Answer 1'
         }
       })
@@ -198,7 +198,7 @@ describe('SurveyResult GraphQL', () => {
       const { mutate } = createTestClient({ apolloServer })
       const res: any = await mutate(saveSurveyResultMutation, {
         variables: {
-          surveyId: surveyRes.ops[0]._id.toString(),
+          surveyId: surveyRes.insertedId.toHexString(),
           answer: 'Answer 1'
         }
       })
