@@ -27,12 +27,8 @@ describe('AccountMongoRepository', () => {
     it('Should return an account id on success', async () => {
       const sut = makeSut()
       const addAccountParams = mockAddAccountParams()
-      const account = await sut.add(addAccountParams)
-      expect(account).toBeTruthy()
-      expect(account.id).toBeTruthy()
-      expect(account.name).toBe(addAccountParams.name)
-      expect(account.email).toBe(addAccountParams.email)
-      expect(account.password).toBe(addAccountParams.password)
+      const isValid = await sut.add(addAccountParams)
+      expect(isValid).toBe(true)
     })
   })
 
@@ -45,7 +41,6 @@ describe('AccountMongoRepository', () => {
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
       expect(account.name).toBe(addAccountParams.name)
-      expect(account.email).toBe(addAccountParams.email)
       expect(account.password).toBe(addAccountParams.password)
     })
 
@@ -53,6 +48,22 @@ describe('AccountMongoRepository', () => {
       const sut = makeSut()
       const account = await sut.loadByEmail(faker.internet.email())
       expect(account).toBeFalsy()
+    })
+  })
+
+  describe('checkByEmail()', () => {
+    it('Should return true if email is valid', async () => {
+      const sut = makeSut()
+      const addAccountParams = mockAddAccountParams()
+      await accountCollection.insertOne(addAccountParams)
+      const exists = await sut.checkByEmail(addAccountParams.email)
+      expect(exists).toBe(true)
+    })
+
+    it('Should return false if email is not valid', async () => {
+      const sut = makeSut()
+      const exists = await sut.checkByEmail(faker.internet.email())
+      expect(exists).toBe(false)
     })
   })
 
@@ -94,9 +105,6 @@ describe('AccountMongoRepository', () => {
       const account = await sut.loadByToken(accessToken)
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
-      expect(account.name).toBe(name)
-      expect(account.email).toBe(email)
-      expect(account.password).toBe(password)
     })
 
     it('Should return an account id on loadByToken with admin role', async () => {
@@ -111,9 +119,6 @@ describe('AccountMongoRepository', () => {
       const account = await sut.loadByToken(accessToken, 'admin')
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
-      expect(account.name).toBe(name)
-      expect(account.email).toBe(email)
-      expect(account.password).toBe(password)
     })
 
     it('Should return null on loadByToken with invalid role', async () => {
@@ -140,9 +145,6 @@ describe('AccountMongoRepository', () => {
       const account = await sut.loadByToken(accessToken)
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
-      expect(account.name).toBe(name)
-      expect(account.email).toBe(email)
-      expect(account.password).toBe(password)
     })
 
     it('Should return null if loadByToken fails', async () => {
