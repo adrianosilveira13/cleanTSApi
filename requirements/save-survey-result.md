@@ -1,6 +1,6 @@
 # Answer to a survey
 
-> ## Caso de sucesso
+> ## Success
 
 1. ✅ Receives a **PUT** request on **/api/surveys/{survey_id}/results**
 2. ✅ Validate if the request has been made by an **user**

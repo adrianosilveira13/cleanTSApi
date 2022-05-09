@@ -1,6 +1,6 @@
 # SignUp
 
-> ## Caso de sucesso
+> ## Success
 
 1. ✅ Receive a **POST** request on **/api/signup**
 2. ✅ Validate the required data: **name**, **email**, **password** and **passwordConfirmation**
