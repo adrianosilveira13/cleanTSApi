@@ -9,7 +9,7 @@ import request from 'supertest'
 let surveyCollection: Collection
 let accountCollection: Collection
 
-const makeAccessToken = async (): Promise<string> => {
+const mockAccessToken = async (): Promise<string> => {
   const password = await hash('123', 12)
   const res = await accountCollection.insertOne({
     name: 'Adriano',
@@ -61,7 +61,7 @@ describe('Survey Routes', () => {
     })
 
     it('Should return 204 on add survey with valid access token', async () => {
-      const accessToken = await makeAccessToken()
+      const accessToken = await mockAccessToken()
       await request(app)
         .post('/api/surveys')
         .set('x-access-token', accessToken)
@@ -85,7 +85,7 @@ describe('Survey Routes', () => {
     })
 
     it('Should return 204 on load surveys with valid access token', async () => {
-      const accessToken = await makeAccessToken()
+      const accessToken = await mockAccessToken()
       await request(app)
         .get('/api/surveys')
         .set('x-access-token', accessToken)
