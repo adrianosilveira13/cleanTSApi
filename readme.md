@@ -2,9 +2,7 @@
 
 This API was created through Rodrigo Manguinho's (Mango) Udemy course.
 
-<br /><br />
-
-> ## APIs created through the couse
+> ## APIs created through the course
 
 1. [SignUp](./requirements/signup.md)
 2. [Login](./requirements/login.md)
