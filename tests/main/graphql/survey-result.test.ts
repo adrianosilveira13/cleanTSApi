@@ -1,14 +1,16 @@
 import env from '@/main/config/env'
 import { MongoHelper } from '@/infra/db'
-import app from '@/main/config/app'
+import { setupApp } from '@/main/config/app'
 
 import { sign } from 'jsonwebtoken'
 import request from 'supertest'
 import { Collection, ObjectId } from 'mongodb'
 import { hash } from 'bcrypt'
+import { Express } from 'express'
 
 let surveyCollection: Collection
 let accountCollection: Collection
+let app: Express
 
 const mockAccessToken = async (): Promise<string> => {
   const password = await hash('123', 12)
@@ -32,6 +34,7 @@ const mockAccessToken = async (): Promise<string> => {
 
 describe('SurveyResult GraphQL', () => {
   beforeAll(async () => {
+    app = await setupApp()
     await MongoHelper.connect(process.env.MONGO_URL)
   })
 
