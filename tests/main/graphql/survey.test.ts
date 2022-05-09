@@ -99,5 +99,23 @@ describe('Survey GraphQL', () => {
         image: null
       }])
     })
+
+    it('Should return AccessDeniedError if no token is provided', async () => {
+      const now = new Date()
+      await surveyCollection.insertOne({
+        question: 'Question',
+        answers: [{
+          answer: 'Answer 1',
+          image: 'http://image.com/image.png'
+        }, {
+          answer: 'Answer 2'
+        }],
+        date: now
+      })
+      const { query } = createTestClient({ apolloServer })
+      const res: any = await query(surveysQuery)
+      expect(res.data).toBeFalsy()
+      expect(res.errors[0].message).toBe('Access Denied')
+    })
   })
 })
