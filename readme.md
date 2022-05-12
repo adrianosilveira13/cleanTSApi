@@ -1,7 +1,5 @@
 # **Clean Node API**
 
-This API was created through Rodrigo Manguinho's (Mango) Udemy course.
-
 > ## APIs created through the course
 
 1. [SignUp](./requirements/signup.md)
